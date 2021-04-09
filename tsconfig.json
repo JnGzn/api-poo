@@ -9,11 +9,11 @@
         "outDir": "dist",
         "baseUrl": "./src",
         "paths": {
-            "*": ["node_modules/*"]
+            "": ["node_modules/*"]
         },
         "pretty": true,
         "strict": true
 
     }, 
-    "include": ["./src/**/*.ts"]
+    "include": ["src/**/*.ts"]
 }

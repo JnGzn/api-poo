@@ -1,0 +1,1 @@
+{"version":3,"file":"entidad.controller.js","sourceRoot":"","sources":["../../src/routes/entidad.controller.ts"],"names":[],"mappings":";;;AAEA,MAAc,iBAAiB;IAC3B,wBAAwB;IAClB,MAAM,CAAC,GAAQ;QAErB,eAAe;QACf,GAAG,CAAC,GAAG,CAAC,GAAG,EAAE,CAAC,GAAqB,EAAE,GAAqB,EAAE,EAAE;YAC1D,GAAG,CAAC,IAAI,CAAC,YAAY,CAAC,CAAA;QAC1B,CAAC,CAAC,CAAA;IAEH,CAAC;CACH;AAVD,8CAUC"}
