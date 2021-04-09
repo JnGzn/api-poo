@@ -6,7 +6,22 @@ export  class ControllerEntidad {
 
     // peticion GET
     app.get('/', (req : express.Request, res: express.Response) => {
-        res.send('Hello Word')
+        res.send('GET')
+    })
+
+    // peticion POST
+    app.post('/', (req : express.Request, res: express.Response) => {
+        res.send('POST')
+    })
+
+    // peticion PUT
+    app.put('/', (req : express.Request, res: express.Response) => {
+        res.send('PUT')
+    })
+
+    // peticion DELETE
+    app.delete('/', (req : express.Request, res: express.Response) => {
+        res.send('DELETE')
     })
 
    }
