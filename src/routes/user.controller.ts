@@ -1,36 +1,19 @@
 // importacion librerias
 import express from 'express'
-import joi, { valid } from "joi";
+import { schemaUserDelete, schemaUserPost, schemaUserPut, schemaUserGet } from "./user.validate";
+import { UserService } from '../services/user.service';
 
-// definicion listado usuario
-const listUser = [
-    {
-        id: 1,
-        name: 'Juan'
-    },
-    {
-        id: 2,
-        name: 'Gabriel'
-    },
-    {
-        id: 3,
-        name: 'Garzon'
-    }
-]
 
-// define esquema usuario
-const schemaUser = joi.object({
-    id: joi.number().required(),
-    name: joi.string()
-})
+
 
 export  class ControllerUser {
+    private userService = new UserService()
     // atributos de la clase
    public routes(app: any){
 
     // peticion GET
     app.get('/user', (req : express.Request, res: express.Response) => {
-        const validation = schemaUser.validate(req.query)
+        const validation = schemaUserGet.validate(req.query)
 
         // si existe el error
         if(validation.error){
@@ -43,25 +26,11 @@ export  class ControllerUser {
             res.end()
         }
 
-        // recorremos el listado de usuarios
-        listUser.forEach(user => {
+        const user = this.userService.getUser(Number(req.query.id))
 
-            // si ID enviado coincide con el listado
-            if(user.id === Number(req.query.id)) {
-
-                // retornamos la informacion del usuario
-                res.status(200).json({
-                    data: user,
-                    status: null
-                })
-                // finalizamos el proceso
-                res.end()
-            }
-        })
-
-        // si no se encuentra el usuario
+        // retornamos la informacion del usuario
         res.status(200).json({
-            data: {},
+            data: user,
             status: null
         })
         // finalizamos el proceso
@@ -71,6 +40,8 @@ export  class ControllerUser {
 
     // Peticion GET obtener todo
     app.get('/user/list', (req : express.Request, res: express.Response) => {
+
+        const listUser = this.userService.getUsers()
         // retornamos listado usuario
         res.status(200).json({
             data: listUser,
@@ -80,61 +51,37 @@ export  class ControllerUser {
         res.end()
     })
 
-    // peticion POST
-    app.post('/user', (req : express.Request, res: express.Response) => {
-        console.log(req.body)
-        const validation = schemaUser.validate(req.body)
+        // peticion POST
+        app.post('/user', (req : express.Request, res: express.Response) => {
 
-        // si existe el error
-        if(validation.error){
-            // retornamos el error
-            res.status(422).json({
-                data: null,
-                status: validation.error.message
-            })
-            // finalzamos el proceso
-            res.end()
-        }
+            const validation = schemaUserPost.validate(req.body)
 
-        // usuario a guardar
-        const user = {
-            id: Number(req.body.id),
-            name: req.body.name
-        }
-
-
-        listUser.forEach((elemnt, idx)=> {
-            // validamos si ya existe el Id
-            if(elemnt.id === user.id){
-                // notifica existencia
-                res.status(202).json({
-                    data: {},
-                    status: "id ya existe"
+            // si existe el error
+            if(validation.error){
+                // retornamos el error
+                res.status(422).json({
+                    data: null,
+                    status: validation.error.message
                 })
                 // finalzamos el proceso
                 res.end()
             }
+
+            const user = this.userService.postUser(req.body.name)
+
+            // retornamos la informacion del usuario
+            res.status(201).json({
+                data: user,
+                status: null
+            })
+            // finalizamos el proceso
+            res.end()
+
         })
 
-
-
-
-        // guarda usuario
-        listUser.push(user)
-
-        // retornamos la informacion del usuario
-        res.status(201).json({
-            data: user,
-            status: null
-        })
-        // finalizamos el proceso
-        res.end()
-
-    })
-
-    // peticion PUT
+        // peticion PUT
     app.put('/user', (req : express.Request, res: express.Response) => {
-        const validation = schemaUser.validate(req.body)
+        const validation = schemaUserPut.validate(req.body)
 
         // si existe el error
         if(validation.error){
@@ -147,41 +94,19 @@ export  class ControllerUser {
             res.end()
         }
         // usuario ya editado
-        const userEdit = {
-            id: req.body.id,
-            name: req.body.name
-        }
-
-        // recorremos el listado de usuarios
-        listUser.forEach((user, idx) => {
-
-            // si ID enviado coincide con el listado
-            if(user.id === Number(req.body.id)) {
-                // guardamos en el cambio
-                listUser[idx] = userEdit
-                // retornamos la informacion del usuario
-                res.status(200).json({
-                    data: userEdit,
-                    status: null
-                })
-                // finalizamos el proceso
-                res.end()
-            }
-        })
+        const userEdit = this.userService.putUser(req.body.id, req.body.name)
 
          // si no se encuentra el usuario
          res.status(200).json({
-            data: {},
+            data: userEdit,
             status: null
-        })
-        // finalizamos el proceso
-        res.end()
+        }).end()
 
     })
 
     // peticion DELETE
     app.delete('/user', (req : express.Request, res: express.Response) => {
-        const validation = schemaUser.validate(req.body)
+        const validation = schemaUserDelete.validate(req.body)
 
         // si existe el error
         if(validation.error){
@@ -194,37 +119,13 @@ export  class ControllerUser {
             res.end()
         }
 
-        let idxUser = -1
-        // Recorre listado
-        listUser.forEach((elemnt, idx)=> {
-            // busca ID
-            if(elemnt.id === req.body.id){
-                idxUser = idx
-            }
-        })
-
-        // valida si encontro ID
-        if(idxUser === -1) {
-
-            // no se encontró la identifcacion
-            res.status(202).json({
-                data: null,
-                status: "No se encontró el ID"
-            })
-            res.end()
-
-        }
-
-        // borra el elemento
-        listUser.splice(idxUser, 1)
-
+        const user = this.userService.deleteUser(Number(req.body.id))
         // reponde exitoso
         res.status(200).json({
-            data: listUser,
+            data: {},
             status: null
-        })
-        // finaliza
-        res.end()
+        }).end()
+
     })
 
    }
