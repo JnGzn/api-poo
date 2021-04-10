@@ -1,7 +1,7 @@
 
 
 // importacion de librerias
-import { ControllerEntidad } from "./routes/entidad.controller";
+import { ControllerUser } from "./routes/user.controller";
 import express from 'express'
 import logger from "morgan";
 
@@ -9,7 +9,7 @@ import logger from "morgan";
 export default class App {
   // atributos de la clase App
   public app: express.Application
-  public rutas: ControllerEntidad = new ControllerEntidad()
+  public rutasUser: ControllerUser = new ControllerUser()
 
   // constructor de la clase App
   constructor() {
@@ -17,6 +17,6 @@ export default class App {
     this.app.use(express.json())
     this.app.use(logger('dev'))
     // inicio routes
-    this.rutas.routes(this.app)
+    this.rutasUser.routes(this.app)
   }
 }
