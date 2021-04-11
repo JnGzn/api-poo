@@ -50,9 +50,9 @@ class ControllerUser {
             }
         }));
         // Peticion GET obtener todo
-        app.get('/user/list', (req, res) => {
+        app.get('/user/list', (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const listUser = this.userService.getUsers();
+                const listUser = yield this.userService.getUsers();
                 // retornamos listado usuario
                 res.status(200).json({
                     data: listUser,
@@ -67,9 +67,9 @@ class ControllerUser {
                     status: error
                 }).end();
             }
-        });
+        }));
         // peticion POST
-        app.post('/user', (req, res) => {
+        app.post('/user', (req, res) => __awaiter(this, void 0, void 0, function* () {
             const validation = user_validate_1.schemaUserPost.validate(req.body);
             // si existe el error
             if (validation.error) {
@@ -83,7 +83,7 @@ class ControllerUser {
             }
             try {
                 // retornamos la informacion del usuario
-                const user = this.userService.postUser(req.body.name);
+                const user = yield this.userService.postUser(req.body.name);
                 res.status(201).json({
                     data: user,
                     status: null
@@ -97,9 +97,9 @@ class ControllerUser {
                     status: error
                 }).end();
             }
-        });
+        }));
         // peticion PUT
-        app.put('/user', (req, res) => {
+        app.put('/user', (req, res) => __awaiter(this, void 0, void 0, function* () {
             const validation = user_validate_1.schemaUserPut.validate(req.body);
             // si existe el error
             if (validation.error) {
@@ -112,7 +112,7 @@ class ControllerUser {
                 res.end();
             }
             try {
-                const userEdit = this.userService.putUser(req.body.id, req.body.name);
+                const userEdit = yield this.userService.putUser(req.body.id, req.body.name);
                 // si no se encuentra el usuario
                 res.status(200).json({
                     data: userEdit,
@@ -126,9 +126,9 @@ class ControllerUser {
                 }).end();
             }
             // usuario ya editado
-        });
+        }));
         // peticion DELETE
-        app.delete('/user', (req, res) => {
+        app.delete('/user', (req, res) => __awaiter(this, void 0, void 0, function* () {
             const validation = user_validate_1.schemaUserDelete.validate(req.body);
             // si existe el error
             if (validation.error) {
@@ -141,7 +141,7 @@ class ControllerUser {
                 res.end();
             }
             try {
-                const user = this.userService.deleteUser(Number(req.body.id));
+                const user = yield this.userService.deleteUser(Number(req.body.id));
                 // reponde exitoso
                 res.status(200).json({
                     data: user,
@@ -154,7 +154,7 @@ class ControllerUser {
                     status: error
                 }).end();
             }
-        });
+        }));
     }
 }
 exports.ControllerUser = ControllerUser;

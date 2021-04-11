@@ -57,96 +57,147 @@ class UserService {
          * Regresa el listado de usuarios
          * @returns {array} Registros existentes
          */
-        this.getUsers = () => {
-            // return listUser.filter(user => user.status)
-            return [];
-        };
+        this.getUsers = () => __awaiter(this, void 0, void 0, function* () {
+            // Instacia configuracion DB
+            const objConfig = new config_1.Config();
+            // cliente DB
+            const client = new pg_1.Client(objConfig.getConexionString);
+            // inicia la conexion DB
+            client.connect(err => {
+                // si hay un fallo se imprime y lanza erro
+                if (err) {
+                    console.log(err);
+                    throw new Error("Intenal_server_error");
+                }
+            });
+            try {
+                // hace la consula a BD
+                const result = yield client.query(`SELECT * FROM users where  status = 'TRUE'`);
+                if (result.rowCount > 0) {
+                    return result.rows;
+                }
+                else {
+                    return [];
+                }
+            }
+            catch (error) {
+                console.log(error);
+                throw new Error("Intenal_server_error");
+            }
+        });
         /**
          * Agrega usuario al listado
          * @param name {string} nombre del usuari
          * @returns {object} registro ingresado
          */
-        this.postUser = (name) => {
-            // listUser.push({
-            //     id: listUser.length + 1,
-            //     name,
-            //     status: true
-            // })
-            // return listUser[listUser.length - 1]
-        };
+        this.postUser = (name) => __awaiter(this, void 0, void 0, function* () {
+            // Instacia configuracion DB
+            const objConfig = new config_1.Config();
+            // cliente DB
+            const client = new pg_1.Client(objConfig.getConexionString);
+            // inicia la conexion DB
+            client.connect(err => {
+                // si hay un fallo se imprime y lanza erro
+                if (err) {
+                    console.log(err);
+                    throw new Error("Intenal_server_error");
+                }
+            });
+            try {
+                // hace la consula a BD
+                const result = yield client.query(`INSERT INTO users(name) values ('${name}')`);
+                console.log(result);
+                if (result.rowCount > 0) {
+                    return {
+                        name
+                    };
+                }
+                else {
+                    return {};
+                }
+            }
+            catch (error) {
+                console.log(error);
+                throw new Error("Intenal_server_error");
+            }
+        });
         /**
          * edita el usuario en la matriz
          * @param id {id} identificacion del usuario
          * @param name {string} nombre del usuario
          * @returns {object} usuario editado
          */
-        this.putUser = (id, name) => {
-            if (id < 0) {
-                throw new Error("Intebal_server_error");
+        this.putUser = (id, name) => __awaiter(this, void 0, void 0, function* () {
+            // Instacia configuracion DB
+            const objConfig = new config_1.Config();
+            // cliente DB
+            const client = new pg_1.Client(objConfig.getConexionString);
+            // inicia la conexion DB
+            client.connect(err => {
+                // si hay un fallo se imprime y lanza erro
+                if (err) {
+                    console.log(err);
+                    throw new Error("Intenal_server_error");
+                }
+            });
+            try {
+                // hace la consula a BD
+                const result = yield client.query(`UPDATE users SET name='${name}' where id = '${id}'`);
+                console.log(result);
+                if (result.rowCount > 0) {
+                    return {
+                        id,
+                        name
+                    };
+                }
+                else {
+                    return [];
+                }
             }
-            const esEncontrado = false;
-            // listUser.forEach((user, idx) => {
-            //     if(user.id === id){
-            //         this.id = user.id,
-            //         this.name = name
-            //         listUser[idx].name = name;
-            //         esEncontrado = true
-            //     }
-            // })
-            // if(esEncontrado){
-            //     return {
-            //         id: this.id,
-            //         name: this.name
-            //     }
-            // }else{
-            //     return {}
-            // }
-        };
+            catch (error) {
+                console.log(error);
+                throw new Error("Intenal_server_error");
+            }
+        });
         /**
          * edita el usuario en la matriz
          * @param id {id} identificacion del usuario
          * @returns {object} usuario eliminado
          */
-        this.deleteUser = (id) => {
-            if (id < 0) {
-                throw new Error("Intebal_server_error");
+        this.deleteUser = (id) => __awaiter(this, void 0, void 0, function* () {
+            // Instacia configuracion DB
+            const objConfig = new config_1.Config();
+            // cliente DB
+            const client = new pg_1.Client(objConfig.getConexionString);
+            // inicia la conexion DB
+            client.connect(err => {
+                // si hay un fallo se imprime y lanza erro
+                if (err) {
+                    console.log(err);
+                    throw new Error("Intenal_server_error");
+                }
+            });
+            try {
+                // hace la consula a BD
+                const result = yield client.query(`UPDATE users SET status='false' where id = '${id}'`);
+                console.log(result);
+                if (result.rowCount > 0) {
+                    return {
+                        id
+                    };
+                }
+                else {
+                    return [];
+                }
             }
-            const esEncontrado = false;
-            // listUser.forEach((user, idx) => {
-            //     if(user.id === id){
-            //         listUser[idx].status = false;
-            //         this.id = user.id,
-            //         this.name = user.name
-            //         this.status = false
-            //         esEncontrado = true
-            //     }
-            // })
-            if (esEncontrado) {
-                return {
-                    id: this.id,
-                    name: this.name
-                };
+            catch (error) {
+                console.log(error);
+                throw new Error("Intenal_server_error");
             }
-            else {
-                return {};
-            }
-        };
+        });
         this.id = -1;
         this.name = '';
         this.status = true;
-    }
-    /**
-     * obtiene el indice del objecto
-     * @param id {number} id del usuario
-     * @returns {number} indice del objecto ó -1 si no loo encuentra
-     */
-    getIdxUser(id) {
-        // listUser.forEach((user, idx) => {
-        //     if(user.id === id){
-        //         return idx
-        //     }
-        // })
-        return -1;
     }
 }
 exports.UserService = UserService;

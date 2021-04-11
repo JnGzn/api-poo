@@ -63,9 +63,36 @@ export class UserService {
      * Regresa el listado de usuarios
      * @returns {array} Registros existentes
      */
-    public getUsers = (): any[] => {
-        // return listUser.filter(user => user.status)
-        return [];
+    public getUsers = async (): Promise<any[]> => {
+        // Instacia configuracion DB
+        const objConfig = new Config()
+        // cliente DB
+        const client = new Client(objConfig.getConexionString)
+
+        // inicia la conexion DB
+        client.connect(err => {
+            // si hay un fallo se imprime y lanza erro
+            if(err){
+                console.log(err);
+                throw new Error("Intenal_server_error")
+            }
+        })
+
+        try {
+            // hace la consula a BD
+            const result = await client.query(`SELECT * FROM users where  status = 'TRUE'`)
+            if(result.rowCount > 0){
+                return result.rows
+            }else{
+                return []
+            }
+
+
+        } catch (error) {
+            console.log(error);
+
+            throw new Error("Intenal_server_error");
+        }
     }
 
     /**
@@ -73,15 +100,41 @@ export class UserService {
      * @param name {string} nombre del usuari
      * @returns {object} registro ingresado
      */
-    public postUser = (name: string): any =>{
+    public postUser = async (name: string): Promise<any> =>{
 
-        // listUser.push({
-        //     id: listUser.length + 1,
-        //     name,
-        //     status: true
-        // })
+         // Instacia configuracion DB
+         const objConfig = new Config()
+         // cliente DB
+         const client = new Client(objConfig.getConexionString)
 
-        // return listUser[listUser.length - 1]
+         // inicia la conexion DB
+         client.connect(err => {
+             // si hay un fallo se imprime y lanza erro
+             if(err){
+                 console.log(err);
+                 throw new Error("Intenal_server_error")
+             }
+         })
+
+         try {
+             // hace la consula a BD
+             const result = await client.query(`INSERT INTO users(name) values ('${name}')`)
+             console.log(result);
+
+             if(result.rowCount > 0){
+                 return {
+                    name
+                 }
+             }else{
+                 return {}
+             }
+
+
+         } catch (error) {
+             console.log(error);
+
+             throw new Error("Intenal_server_error");
+         }
     }
 
     /**
@@ -90,30 +143,43 @@ export class UserService {
      * @param name {string} nombre del usuario
      * @returns {object} usuario editado
      */
-    public putUser = (id: number, name: string): any => {
+    public putUser = async (id: number, name: string): Promise<any> => {
 
-        if(id < 0){
-            throw new Error("Intebal_server_error")
-        }
+         // Instacia configuracion DB
+         const objConfig = new Config()
+         // cliente DB
+         const client = new Client(objConfig.getConexionString)
 
-        const esEncontrado = false;
-        // listUser.forEach((user, idx) => {
-        //     if(user.id === id){
-        //         this.id = user.id,
-        //         this.name = name
-        //         listUser[idx].name = name;
-        //         esEncontrado = true
-        //     }
-        // })
+         // inicia la conexion DB
+         client.connect(err => {
+             // si hay un fallo se imprime y lanza erro
+             if(err){
+                 console.log(err);
+                 throw new Error("Intenal_server_error")
+             }
+         })
 
-        // if(esEncontrado){
-        //     return {
-        //         id: this.id,
-        //         name: this.name
-        //     }
-        // }else{
-        //     return {}
-        // }
+         try {
+             // hace la consula a BD
+             const result = await client.query(`UPDATE users SET name='${name}' where id = '${id}'`)
+             console.log(result);
+
+             if(result.rowCount > 0){
+                 return {
+                     id,
+                     name
+                 }
+             }else{
+                 return []
+             }
+
+
+         } catch (error) {
+             console.log(error);
+
+             throw new Error("Intenal_server_error");
+         }
+
     }
 
     /**
@@ -121,46 +187,43 @@ export class UserService {
      * @param id {id} identificacion del usuario
      * @returns {object} usuario eliminado
      */
-     public deleteUser = (id: number): any => {
+     public deleteUser = async (id: number): Promise<any> => {
 
-        if(id < 0){
-            throw new Error("Intebal_server_error")
-        }
+        // Instacia configuracion DB
+        const objConfig = new Config()
+        // cliente DB
+        const client = new Client(objConfig.getConexionString)
 
-        const esEncontrado = false;
-        // listUser.forEach((user, idx) => {
-        //     if(user.id === id){
-        //         listUser[idx].status = false;
-        //         this.id = user.id,
-        //         this.name = user.name
-        //         this.status = false
-        //         esEncontrado = true
-        //     }
-        // })
-
-        if(esEncontrado){
-            return {
-                id: this.id,
-                name: this.name
+        // inicia la conexion DB
+        client.connect(err => {
+            // si hay un fallo se imprime y lanza erro
+            if(err){
+                console.log(err);
+                throw new Error("Intenal_server_error")
             }
-        }else{
-            return {}
+        })
+
+        try {
+            // hace la consula a BD
+            const result = await client.query(`UPDATE users SET status='false' where id = '${id}'`)
+            console.log(result);
+
+            if(result.rowCount > 0){
+                return {
+                    id
+                }
+            }else{
+                return []
+            }
+
+
+        } catch (error) {
+            console.log(error);
+
+            throw new Error("Intenal_server_error");
         }
 
 
     }
 
-    /**
-     * obtiene el indice del objecto
-     * @param id {number} id del usuario
-     * @returns {number} indice del objecto ó -1 si no loo encuentra
-     */
-    private  getIdxUser(id: number){
-        // listUser.forEach((user, idx) => {
-        //     if(user.id === id){
-        //         return idx
-        //     }
-        // })
-        return -1;
-    }
 }

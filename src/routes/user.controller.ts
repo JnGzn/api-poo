@@ -46,10 +46,10 @@ export  class ControllerUser {
     })
 
     // Peticion GET obtener todo
-    app.get('/user/list', (req : express.Request, res: express.Response) => {
+    app.get('/user/list', async (req : express.Request, res: express.Response) => {
 
         try {
-            const listUser = this.userService.getUsers()
+            const listUser = await this.userService.getUsers()
             // retornamos listado usuario
             res.status(200).json({
                 data: listUser,
@@ -67,7 +67,7 @@ export  class ControllerUser {
     })
 
         // peticion POST
-        app.post('/user', (req : express.Request, res: express.Response) => {
+        app.post('/user', async (req : express.Request, res: express.Response) => {
 
             const validation = schemaUserPost.validate(req.body)
 
@@ -84,7 +84,7 @@ export  class ControllerUser {
 
             try {
                 // retornamos la informacion del usuario
-                const user = this.userService.postUser(req.body.name)
+                const user = await this.userService.postUser(req.body.name)
                 res.status(201).json({
                     data: user,
                     status: null
@@ -103,7 +103,7 @@ export  class ControllerUser {
         })
 
         // peticion PUT
-    app.put('/user', (req : express.Request, res: express.Response) => {
+    app.put('/user', async (req : express.Request, res: express.Response) => {
         const validation = schemaUserPut.validate(req.body)
 
         // si existe el error
@@ -118,7 +118,7 @@ export  class ControllerUser {
         }
 
         try {
-            const userEdit = this.userService.putUser(req.body.id, req.body.name)
+            const userEdit = await this.userService.putUser(req.body.id, req.body.name)
 
             // si no se encuentra el usuario
             res.status(200).json({
@@ -137,7 +137,7 @@ export  class ControllerUser {
     })
 
     // peticion DELETE
-    app.delete('/user', (req : express.Request, res: express.Response) => {
+    app.delete('/user', async (req : express.Request, res: express.Response) => {
         const validation = schemaUserDelete.validate(req.body)
 
         // si existe el error
@@ -153,7 +153,7 @@ export  class ControllerUser {
 
         try {
 
-            const user = this.userService.deleteUser(Number(req.body.id))
+            const user = await this.userService.deleteUser(Number(req.body.id))
             // reponde exitoso
             res.status(200).json({
                 data: user,
